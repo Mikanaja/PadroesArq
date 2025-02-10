@@ -8,13 +8,21 @@ Mikhael Machado Fernandes Maia - 202004771
 Wendel Márcio de Oliveira Filho - 202105056
 ```
 
-# Detecção de Vídeos Gerados por Modelos GAN.
+# Detecção de Vídeos Gerados por Modelos GAN
 
 ## C4 Model
 
 ### 1. Context
 
+<p align="center">
+    <img src="images/C4_context.jpg" alt="Diagrama de Contexto" width="512"/>
+<p>
+
 ### 2. Containers
+
+<p align="center">
+    <img src="images/C4_container.png" alt="Diagrama de Containers" width="512"/>
+<p>
 
 ### 3. Components
 
