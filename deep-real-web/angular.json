@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "deep-real-app": {
+    "deep-real-web": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/deep-real-app",
+            "outputPath": "dist/deep-real-web",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -64,10 +64,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "deep-real-app:build:production"
+              "buildTarget": "deep-real-web:build:production"
             },
             "development": {
-              "buildTarget": "deep-real-app:build:development"
+              "buildTarget": "deep-real-web:build:development"
             }
           },
           "defaultConfiguration": "development"
