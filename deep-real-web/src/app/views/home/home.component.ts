@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { DeepRealUploadFileComponent } from '../../shared/components/deep-real-upload-file/deep-real-upload-file.component';
 import { DeepRealPageComponent } from "../../shared/components/containers/deep-real-page/deep-real-page.component";
+import { DeepRealFilesModule } from '../../shared/components/deep-real-files/deep-real-files.module';
 
 @Component({
   selector: 'deep-real-home',
   standalone: true,
   imports: [
-    DeepRealUploadFileComponent,
+    DeepRealFilesModule,
     DeepRealPageComponent
 ],
   templateUrl: './home.component.html',

@@ -1,0 +1,20 @@
+<div class="main-section">
+    <input 
+        id="file"
+        type="file"
+        (change)="onFileChange($event)"
+        #fileUpload/>
+
+    <div class="file-upload">
+        <deep-real-button
+            class="upload-btn"
+            icon="upload"
+            (onClick)="fileUpload.click()">
+        </deep-real-button>
+    </div>
+
+    <deep-real-files-lists
+        [files]="files"
+        (onRemove)="onRemove($event)">
+    </deep-real-files-lists>
+</div>
