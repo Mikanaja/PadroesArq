@@ -18,6 +18,14 @@ Angular CLI is a command-line interface for Angular. To install Angular CLI, run
 npm install -g @angular/cli
 ```
 
+## Installing Dependencies
+
+To install the project dependencies, navigate to the project directory and run:
+
+```bash
+npm install
+```
+
 ## Development server
 
 To start a local development server, run:
