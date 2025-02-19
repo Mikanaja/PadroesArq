@@ -26,5 +26,8 @@ Wendel Márcio de Oliveira Filho - 202105056
 <p>
 
 ### 3. Components
+<p align="center">
+    <img src="images/C4_components.jpeg" alt="Diagrama de Containers" width="512"/>
+<p>
 
 ### 4. Code
