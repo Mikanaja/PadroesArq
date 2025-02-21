@@ -8,8 +8,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class DeepRealFilesListsComponent {
   @Input()
-  public files: File[] = [];
+  public files: any[] = [];
+
+  public inProgress: boolean = false;
 
   @Output()
   public onRemove: EventEmitter<File> = new EventEmitter<File>();
+
+  public get iconPath(): string {
+    return './../../../../../assets/icons/upload-file-24.svg';
+  }
 }

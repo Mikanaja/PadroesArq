@@ -4,7 +4,6 @@ import { DeepRealFilesModule } from '../../shared/components/deep-real-files/dee
 
 @Component({
   selector: 'deep-real-home',
-  standalone: true,
   imports: [
     DeepRealFilesModule,
     DeepRealPageComponent

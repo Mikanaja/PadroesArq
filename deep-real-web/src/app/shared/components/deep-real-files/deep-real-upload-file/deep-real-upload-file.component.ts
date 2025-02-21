@@ -4,10 +4,7 @@ import { Component } from '@angular/core';
   selector: 'deep-real-upload-file',
   standalone: false,
   templateUrl: './deep-real-upload-file.component.html',
-  styleUrl: './deep-real-upload-file.component.scss',
-  host: {
-    class: 'deep-real-upload-file'
-  }
+  styleUrl: './deep-real-upload-file.component.scss'
 })
 export class DeepRealUploadFileComponent {
 
@@ -17,10 +14,15 @@ export class DeepRealUploadFileComponent {
 
   constructor() { }
 
+  public get iconPath(): string {
+    return './../../../../../assets/icons/upload-file-24.svg';
+  }
+
   public onFileChange(event: any): void {
     if (event.target.files.length > 0) {
       this.files = event.target.files;
-      this.fileUrl = URL.createObjectURL(this.files[0]);
+      // this.fileUrl = URL.createObjectURL(this.files[0]);
+      console.log('file', this.files);
     }
   }
 
@@ -31,6 +33,16 @@ export class DeepRealUploadFileComponent {
 
   public onRemove(file: File): void {
     this.files = this.files.filter((f: File) => f !== file);
+  }
+
+  public onDrop(event: any): void {
+    event.preventDefault();
+    this.files = event.dataTransfer.files;
+    this.fileUrl = URL.createObjectURL(this.files[0]);
+  }
+
+  public onDragOver(event: any): void {
+    event.preventDefault();
   }
 
 }

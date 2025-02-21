@@ -1,1 +1,24 @@
-<p>deep-real-files-lists works!</p>
+<div class="file-list">
+    <div class="file" *ngFor="let file of files; let i = index">
+        <div class="icon">
+            <img [src]="iconPath" alt="Upload icon" class="dropzone__icon">
+        </div>
+        <div class="info">
+            <div class="top">
+                <p>{{ file.name }}</p>
+
+                <deep-real-button *nfIf="true; else successIcon;" icon="trash"></deep-real-button>
+
+                <ng-template #successIcon>
+                    <deep-real-button icon="check"></deep-real-button>
+                </ng-template>
+            </div>
+            <div class="middle">
+                <deep-real-progress-indicator-bar [progress]="file?.progress"></deep-real-progress-indicator-bar>
+            </div>
+            <div class="bottom">
+                <span>{{ file.size }}</span>
+            </div>
+        </div>
+    </div>
+</div>

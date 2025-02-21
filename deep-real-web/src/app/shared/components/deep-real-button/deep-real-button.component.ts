@@ -3,7 +3,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 @Component({
   selector: 'deep-real-button',
   imports: [],
-  standalone: true,
   templateUrl: './deep-real-button.component.html',
   styleUrl: './deep-real-button.component.scss'
 })

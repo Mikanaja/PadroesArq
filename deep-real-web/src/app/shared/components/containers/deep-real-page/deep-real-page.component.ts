@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'deep-real-page',
-  standalone: true,
   imports: [],
   template: `
     <div class="deep-real-page-container">
