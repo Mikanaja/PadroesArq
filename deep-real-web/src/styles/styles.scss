@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 @use '_colors.scss';
+@use '_typography.scss';
 
 html, body {
     height: 100%;
@@ -12,4 +13,46 @@ body {
 
 * {
     box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'quasimoda-light';
+    src: url('./../assets/fonts/Quasimoda/Quasimoda-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'quasimoda-regular';
+    src: url('./../assets/fonts/Quasimoda/Quasimoda-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'quasimoda-medium';
+    src: url('./../assets/fonts/Quasimoda/Quasimoda-Medium.otf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'quasimoda-semi-bold';
+    src: url('./../assets/fonts/Quasimoda/Quasimoda-SemiBold.otf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'quasimoda-bold';
+    src: url('./../assets/fonts/Quasimoda/Quasimoda-Bold.otf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'quasimoda-extra-bold';
+    src: url('./../assets/fonts/Quasimoda/Quasimoda-ExtraBold.otf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
 }
