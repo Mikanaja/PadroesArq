@@ -1,0 +1,24 @@
+spring.application.name=DeepReal
+
+# Database configuration
+spring.datasource.driver-class-name=
+spring.datasource.url=
+spring.jpa.hibernate.ddl-auto=
+spring.datasource.username=
+spring.datasource.password=
+
+#Configuração do Bucket e Database
+aws.s3.bucket-name=
+aws.s3.region=
+aws.s3.access-key=
+aws.s3.secret-key=
+
+# Tamanho máximo para um arquivo (em bytes)
+spring.servlet.multipart.max-file-size=100MB
+
+# Tamanho máximo para todos os arquivos (em bytes)
+spring.servlet.multipart.max-request-size=10MB
+
+
+#Coloque false para que a stack trace não apareça no body da resposta
+server.error.include-exception = true

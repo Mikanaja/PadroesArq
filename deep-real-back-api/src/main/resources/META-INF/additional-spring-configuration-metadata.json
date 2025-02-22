@@ -1,0 +1,22 @@
+{"properties": [
+  {
+    "name": "aws.s3.bucket-name",
+    "type": "java.lang.String",
+    "description": "Nome do Bucket em que serão armazenados os arquivos"
+  },
+  {
+    "name": "aws.s3.region",
+    "type": "java.lang.String",
+    "description": "Região da AWS onde o Bucket está localizado"
+  },
+  {
+    "name": "aws.s3.access-key",
+    "type": "java.lang.String",
+    "description": "Chave de acesso da AWS"
+  },
+  {
+    "name": "aws.s3.secret-key",
+    "type": "java.lang.String",
+    "description": "Chave secreta da AWS"
+  }
+]}
