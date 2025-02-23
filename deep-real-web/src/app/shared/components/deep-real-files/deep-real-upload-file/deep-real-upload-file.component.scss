@@ -1,3 +1,9 @@
+:host(.deep-real-upload-file) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .dropzone {
     border: 2px dashed var(--deep-real-grey);
     border-radius: 25px;
@@ -50,7 +56,5 @@
 }
 
 deep-real-files-lists {
-    position: relative;
-    margin: 0 auto;
-    top: 3rem;
+    padding-top: 3rem;
 }

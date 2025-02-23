@@ -1,48 +1,92 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { UploadFileService } from '../../../../core/services/upload-file.service';
+import { Video } from '../../../../core/models/video.model';
+import { BehaviorSubject } from 'rxjs';
+import { FormArray, FormGroup } from '@angular/forms';
+import { createVideoForm } from '../../../../core/utils/forms';
 
 @Component({
   selector: 'deep-real-upload-file',
   standalone: false,
   templateUrl: './deep-real-upload-file.component.html',
-  styleUrl: './deep-real-upload-file.component.scss'
+  styleUrl: './deep-real-upload-file.component.scss',
+  host: {
+    class: 'deep-real-upload-file'
+  }
 })
 export class DeepRealUploadFileComponent {
 
-  // public file: File[] = new File([], '');
-  public files: File[] = [];
-  public fileUrl: string = '';
+  public videos$: BehaviorSubject<Video[]> = new BehaviorSubject<Video[]>([]);
+  
+  private videosFormArray$: BehaviorSubject<FormArray<FormGroup>> = new BehaviorSubject<FormArray<FormGroup>>(new FormArray<FormGroup>([]));
 
-  constructor() { }
+  private files: File[] = [];
+
+  @Input()
+  public set videosForm(videosFormArray: FormArray) {
+    this.videosFormArray$.next(videosFormArray);
+  }
+
+  constructor(
+    private uploadFileService: UploadFileService
+  ) { }
+
+  public get videosFormArray(): FormArray {
+    return this.videosFormArray$.value;
+  }
+
+  public get videos(): Video[] {
+    return this.videos$.value;
+  }
 
   public get iconPath(): string {
     return './../../../../../assets/icons/upload-file-24.svg';
   }
 
   public onFileChange(event: any): void {
-    if (event.target.files.length > 0) {
-      this.files = event.target.files;
-      // this.fileUrl = URL.createObjectURL(this.files[0]);
-      console.log('file', this.files);
+    const input = event.target as HTMLInputElement;
+
+    if (input.files) {
+      const selectedFiles: File[] = Array.from(input.files);
+      this.files = [...this.files, ...selectedFiles];
+      this.handleUploadMultipleFiles(selectedFiles);
     }
   }
 
-  public sendFiles(): void {
-    console.log('file', this.files);
-    console.log('fileUrl', this.fileUrl);
+  private handleUploadMultipleFiles(files: File[]): void {
+    files.forEach((file: File) => {
+      this.handleUploadSingleFile(file);
+    });
+  }
+
+  private handleUploadSingleFile(file: File): void {
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+
+    this.uploadFileService.uploadFile(formData)
+      .subscribe((video: Video) => {
+        console.log(video);
+        this.videos$.next([...this.videos, video]);
+        this.videosFormArray.push(createVideoForm(video));
+      }
+    );
   }
 
   public onRemove(file: File): void {
     this.files = this.files.filter((f: File) => f !== file);
   }
 
-  public onDrop(event: any): void {
-    event.preventDefault();
-    this.files = event.dataTransfer.files;
-    this.fileUrl = URL.createObjectURL(this.files[0]);
-  }
-
-  public onDragOver(event: any): void {
-    event.preventDefault();
-  }
-
 }
+
+/**
+ * if (this.files.length === 0) {
+      this.files = event.target.files;
+    } else {
+      this.files = Array.from(this.files).concat(Array.from(event.target.files));
+    }
+    
+    this.files = event.target.files;
+    if (this.files.length > 0) {
+      this.handleUploadMultipleFiles(this.files);
+    }
+ */

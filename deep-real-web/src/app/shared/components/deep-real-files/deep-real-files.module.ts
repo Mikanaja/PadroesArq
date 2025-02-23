@@ -9,7 +9,7 @@ import { DeepRealProgressIndicatorBarComponent } from "../deep-real-progress-ind
   imports: [
     CommonModule,
     DeepRealButtonComponent,
-    DeepRealProgressIndicatorBarComponent
+    DeepRealProgressIndicatorBarComponent,
 ],
   declarations: [DeepRealFilesListsComponent, DeepRealUploadFileComponent],
   exports: [DeepRealFilesListsComponent, DeepRealUploadFileComponent]

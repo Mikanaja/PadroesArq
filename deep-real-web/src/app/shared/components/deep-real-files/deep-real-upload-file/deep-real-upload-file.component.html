@@ -1,8 +1,9 @@
-<div class="dropzone" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
+<div class="dropzone">
     <input 
         id="file"
         type="file"
         (change)="onFileChange($event)"
+        multiple
         #fileUpload/>
 
     <div class="icon">
@@ -11,11 +12,13 @@
 
     <div class="dropzone__info">
         <p>Clique aqui para enviar seus vídeos ou arraste e solte.</p>
-        <span>Formatos suportados: MP4, MOV, FLV, MKV, AVI (até 50MB)</span>
+        <span>Formatos suportados: MP4, AVI, MKV, MOV, FLV (até 100MB)</span>
     </div>
 </div>
 
-<deep-real-files-lists
-    [files]="files"
-    (onRemove)="onRemove($event)">
-</deep-real-files-lists>
+@if (videos.length > 0) {
+    <deep-real-files-lists
+        [videos]="videos"
+        (onRemove)="onRemove($event)">
+    </deep-real-files-lists>
+}

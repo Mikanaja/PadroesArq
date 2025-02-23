@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { Video } from '../../../../core/models/video.model';
 
 @Component({
   selector: 'deep-real-files-lists',
@@ -7,8 +9,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './deep-real-files-lists.component.scss'
 })
 export class DeepRealFilesListsComponent {
+  
+  public videos$: BehaviorSubject<Video[]> = new BehaviorSubject<Video[]>([]);
+
   @Input()
-  public files: any[] = [];
+  public set videos(videos: Video[]) {
+    this.videos$.next(videos);
+  }
 
   public inProgress: boolean = false;
 
@@ -18,4 +25,6 @@ export class DeepRealFilesListsComponent {
   public get iconPath(): string {
     return './../../../../../assets/icons/upload-file-24.svg';
   }
+
+  constructor() { }
 }
