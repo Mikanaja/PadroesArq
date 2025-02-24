@@ -37,7 +37,7 @@ public class S3Service {
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(this.bucketName)
                 .key(key)
-                .contentType("video/" + fileFormat) // Ajuste conforme necessário
+                .contentType("video/" + fileFormat)
                 .build();
 
         s3Client.putObject(request, RequestBody.fromFile(filePath));
