@@ -1,6 +1,7 @@
 package com.deepreal.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.CascadeType;
@@ -14,6 +15,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +31,8 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
     
+    public static final String TABLE_NAME = "users";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @NonNull
@@ -38,10 +43,12 @@ public class User {
     @Size(min = 5)
     private String email;
 
-    @Column(name = "horario_criacao", nullable = false, updatable = false)
-    @NotBlank
+    @Column(name = "horario_criacao", updatable = false)
+    @NotNull
+    @PastOrPresent
     private LocalDateTime createdAt;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Video> videos;
 

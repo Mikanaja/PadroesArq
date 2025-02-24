@@ -25,18 +25,13 @@ public class UploadController {
 
     @Autowired
     AnalysisService analysisService;
-    
 
-    @PostMapping()
-    public ResponseEntity<Video> uploadVideo(@RequestParam("file") MultipartFile file) {
-        try {
+    @PostMapping("/{userId}")
+    public ResponseEntity<Video> uploadVideo(@PathVariable UUID userId, @RequestParam("file") MultipartFile file) throws IOException {
             Path tempFile = Files.createTempFile("upload-", file.getOriginalFilename());
             file.transferTo(tempFile.toFile());
-            Video video = analysisService.uploadVideo(tempFile, file.getOriginalFilename(), file.getContentType(), file.getSize());
+            Video video = analysisService.uploadVideo(userId, tempFile, file.getOriginalFilename(), file.getContentType(), file.getSize());
             return ResponseEntity.ok().body(video);
-        } catch (IOException e) {
-            return ResponseEntity.status(500).build();
-        }
     }
     
 }
