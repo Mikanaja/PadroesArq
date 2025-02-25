@@ -3,9 +3,11 @@ import { DeepRealPageComponent } from "../../shared/components/containers/deep-r
 import { DeepRealFilesModule } from '../../shared/components/deep-real-files/deep-real-files.module';
 import { UserService } from '../../core/services/user.service';
 import { Video } from '../../core/models/video.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { User } from '../../core/models/user.model';
 import { FormArray, FormGroup } from '@angular/forms';
+import { AccessService } from '../../core/services/access.service';
+import { LoadingService } from '../../shared/components/splash-screen/loading.service';
 
 @Component({
   selector: 'deep-real-home',
@@ -21,6 +23,8 @@ export class HomeComponent implements OnInit {
   public videos$: BehaviorSubject<Video[]> = new BehaviorSubject<Video[]>([]);
   public user$: BehaviorSubject<FormGroup> = new BehaviorSubject<FormGroup>(new FormGroup({}));
 
+  private destroy$ = new Subject<void>();
+
   @Input()
   public userId: string = '';
 
@@ -30,7 +34,9 @@ export class HomeComponent implements OnInit {
   }
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private accessService: AccessService,
+    private loadingService: LoadingService
   ) { }
 
   public get videosFormArray(): FormArray {
@@ -38,14 +44,22 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadUserVideos(this.userId);
+    this.loadingService.stop();
+    this.accessService.currentUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(this.onUserChange);
   }
 
+  private onUserChange = (user: User): void => {
+    if (user) {
+      this.loadUserVideos(user.id);
+    }
+  };
+  
+
   private loadUserVideos(userId: string): void {
-    // this.userService.getUserVideos(userId)
-    //   .subscribe((videos: Video[]) => {
-    //     console.log(videos);
-    //   });
+    this.userService.findUserVideos(userId)
+      .subscribe((videos: Video[]) => this.videos$.next(videos));
   }
 
 }

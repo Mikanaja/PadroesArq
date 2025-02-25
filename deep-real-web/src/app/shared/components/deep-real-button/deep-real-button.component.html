@@ -1,3 +1,3 @@
 <button (click)="handleClick()">
-    <img [src]="getIconName()">
+    <img *ngIf="icon" [src]="getIconName()">
 </button>

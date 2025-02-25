@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environments';
 import { Observable } from 'rxjs';
@@ -18,8 +18,11 @@ export class UploadFileService {
     this.uploadApiUrl = `${environment.apiUrl}/${this.UPLOAD_PATH}`;
   }
 
-  public uploadFile(file: FormData): Observable<Video> {
-    return this.http.post<Video>(this.uploadApiUrl, file);
+  public uploadFile(userId: string, file: FormData): Observable<HttpEvent<Video>> {
+    return this.http.post<Video>(`${this.uploadApiUrl}/${userId}`, file, {
+      reportProgress: true,
+      observe: 'events'
+    });
   }
 
 }

@@ -1,8 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'deep-real-button',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './deep-real-button.component.html',
   styleUrl: './deep-real-button.component.scss'
 })

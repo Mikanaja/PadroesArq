@@ -1,0 +1,14 @@
+<deep-real-page>
+    <div class="content">
+        <form *ngIf="userForm$ | async as userForm" [formGroup]="userForm">
+            <deep-real-form-field>
+                <deep-real-form-field-label>E-mail</deep-real-form-field-label>
+                <input type="email" formControlName="email" />
+                <deep-real-form-field-error *ngIf="userForm.get('email')?.touched && userForm.get('email')?.hasError('required')">
+                    E-mail é obrigatório
+                </deep-real-form-field-error>
+            </deep-real-form-field>
+        </form>
+        <deep-real-button (onClick)="onSubmit()"></deep-real-button>
+    </div>
+</deep-real-page>
