@@ -3,6 +3,9 @@
 @use '_colors.scss';
 @use '_typography.scss';
 
+$quasimoda-medium: 'quasimoda-medium';
+$quasimoda-semi-bold: 'quasimoda-semi-bold';
+
 html, body {
     height: 100%;
 }
@@ -55,4 +58,42 @@ body {
     src: url('./../assets/fonts/Quasimoda/Quasimoda-ExtraBold.otf') format('truetype');
     font-weight: 800;
     font-style: normal;
+}
+
+:root {
+    --linear-transition-settings: 0.2s all linear;
+}
+
+.deep-real-form-field {
+    input {
+        width: 100%;
+        display: block;
+        padding: 2rem 1rem 1rem 1rem;
+        font-family: $quasimoda-medium;
+        font-size: 1.5rem;
+        letter-spacing: 0.0875rem;
+        outline: none;
+        border: none;
+        resize: none;
+        background-color: #D9D9D9;
+        border: 1px solid #C0C0C0;
+        border-radius: 1rem;
+        transition: var(--linear-transition-settings);
+
+        &::placeholder {
+            font-family: $quasimoda-semi-bold;
+            color: #979797;
+            font-size: 1rem;
+        }
+
+        &:hover {
+            background-color: #E6E6E6;
+            transition: var(--linear-transition-settings);
+        }
+
+        &:focus {
+            border: 1px solid var(--deep-real-black);
+            transition: var(--linear-transition-settings);
+        }
+    }
 }
