@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from PIL import Image
 import requests
-from transformers import AutoImageProcessor, Dinov2WithRegistersForImageClassification
+from transformers import ViTForImageClassification, ViTImageProcessor
 from models.video_model import VideoModel
 import io
 
@@ -59,13 +59,14 @@ def get_router(image_processor, model, s3_client):
 
             middle_frame = extract_middle_frame(video_bytes)
 
-            inputs = image_processor(middle_frame, return_tensors="pt")
+            inputs = image_processor(images=middle_frame, return_tensors="pt")
 
             with torch.no_grad():
-                logits = model(**inputs).logits
+                outputs = model(**inputs)
+                logits = outputs.logits
+                predicted_class = torch.argmax(logits, dim=1).item()
 
-            predicted_label = logits.argmax().item()
-            label = model.config.id2label[predicted_label]
+            label = model.config.id2label[predicted_class]
 
             video_data = VideoModel(
                 filename=video_url.split("/")[-1], 
