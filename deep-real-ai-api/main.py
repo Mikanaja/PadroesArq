@@ -3,7 +3,7 @@ import os
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from controllers.video_controller_s3 import get_router
-from transformers import AutoImageProcessor, Dinov2WithRegistersForImageClassification
+from transformers import ViTForImageClassification, ViTImageProcessor
 
 load_dotenv()
 
@@ -14,18 +14,16 @@ s3_client = boto3.client(
     aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
 )
 
-image_processor = AutoImageProcessor.from_pretrained("WpythonW/dinoV2-deepfake-detector")
-model = Dinov2WithRegistersForImageClassification.from_pretrained("WpythonW/dinoV2-deepfake-detector")
-model.config.id2label = {0: "FAKE", 1: "REAL"}
-model.config.label2id = {"FAKE": 0, "REAL": 1"}
+model = ViTForImageClassification.from_pretrained("prithivMLmods/Deep-Fake-Detector-v2-Model")
+image_processor = ViTImageProcessor.from_pretrained("prithivMLmods/Deep-Fake-Detector-v2-Model")
 
 app = FastAPI()
-
 app.include_router(get_router(image_processor, model, s3_client))
 
 @app.get("/")
 def home():
-    return {"message": "API de Upload de Vídeos está funcionando!"}
+    return {"message": "AI Client está funcionando!"}
 
-
-# ref no momento: https://huggingface.co/WpythonW/dinoV2-deepfake-detector/tree/main
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
