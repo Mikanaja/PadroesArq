@@ -13,9 +13,6 @@ import { LoadingService } from '../../shared/components/splash-screen/loading.se
 export class AccessService {
 
   private user$: BehaviorSubject<User> = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user') || '{}') as User);
-
-  private readonly USER_PATH: string = 'user';
-  private userApiUrl: string = '';
   private accessToken: string = '';
 
   constructor(
@@ -24,7 +21,6 @@ export class AccessService {
     private toastrService: ToastrService,
     private loadingService: LoadingService
   ) {
-    this.userApiUrl = `${environment.apiUrl}/${this.USER_PATH}`;
     this.verifyToken();
   }
 
