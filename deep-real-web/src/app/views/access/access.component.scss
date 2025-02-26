@@ -7,10 +7,8 @@ deep-real-page {
         left: 50%;
         transform: translate(-50%, -50%);
         width: 30rem;
-
-        .submit-button {
-            display: block;
-            margin: 0 auto;
-        }
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
 }

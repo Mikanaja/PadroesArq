@@ -1,3 +1,4 @@
-<button (click)="handleClick()">
+<button [disabled]="disabled" [ngClass]="type" (click)="handleClick()">
     <img *ngIf="icon" [src]="getIconName()">
+    <span *ngIf="text">{{ text }}</span>
 </button>

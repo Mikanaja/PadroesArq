@@ -9,9 +9,17 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class DeepRealButtonComponent {
   
-  @Input() public text: string = '';
-  @Input() public disabled: boolean = false;
-  @Input() public icon: string = '';
+  @Input()
+  public text: string = '';
+  
+  @Input()
+  public disabled: boolean = false;
+  
+  @Input()
+  public icon: string = '';
+  
+  @Input()
+  public type: 'round' | 'flat' = 'round';
 
   @Output()
   public onClick: EventEmitter<void> = new EventEmitter<void>();
