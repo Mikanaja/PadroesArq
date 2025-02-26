@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from urllib.parse import unquote
 import torch
 from PIL import Image
 import io
@@ -63,7 +64,9 @@ def get_router(image_processor, model, s3_client):
             if not video_url.startswith(s3_base_url):
                 raise HTTPException(status_code=400, detail="URL inválida ou não pertence ao bucket configurado.")
 
-            s3_object_key = "/".join(video_url.split(".com/")[-1].split("/"))
+            #s3_object_key = "/".join(video_url.split(".com/")[-1].split("/"))
+            s3_object_key = unquote(video_url.replace(s3_base_url, "", 1))
+
             print(s3_object_key)
 
             video_buffer = s3_client.download_fileobj(s3_client.bucket_name, s3_object_key)
