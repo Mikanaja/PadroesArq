@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { UserService } from './user.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/user.model';
-import { environment } from '../../../environments/environments';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingService } from '../../shared/components/splash-screen/loading.service';
@@ -12,7 +11,9 @@ import { LoadingService } from '../../shared/components/splash-screen/loading.se
 })
 export class AccessService {
 
-  private user$: BehaviorSubject<User> = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user') || '{}') as User);
+  private readonly USER_KEY = 'user';
+
+  private user$: BehaviorSubject<User> = new BehaviorSubject<User>(JSON.parse(localStorage.getItem(this.USER_KEY) || '{}') as User);
   private accessToken: string = '';
 
   constructor(
@@ -26,7 +27,7 @@ export class AccessService {
 
   public currentUser = (): Observable<User> => {
     if (!this.user$.value) {
-      const storedUser = localStorage.getItem('user');
+      const storedUser = localStorage.getItem(this.USER_KEY);
       if (storedUser) {
           this.user$.next(JSON.parse(storedUser));
       } else {
@@ -36,8 +37,18 @@ export class AccessService {
     return this.user$.asObservable();
   };
 
+  public logout = (): void => {
+    this.clearAccessContext();
+    this.router.navigate(['/access']);
+  }
+
+  private clearAccessContext = (): void => {
+    localStorage.removeItem(this.USER_KEY);
+    this.user$.next({} as User);
+  }
+
   public loadUser = (email: string): void => {
-    console.log(email);
+    this.loadingService.start();
     this.userService.findUserByEmail(email)
       .subscribe({
         next: (user: User) => this.handleUser(user),
@@ -54,7 +65,7 @@ export class AccessService {
 
   public verifyToken(): void {
     if (this.accessToken.length > 0) {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem(this.USER_KEY);
       if (token !== this.accessToken)
         this.router.navigate(['/access']);
     }
@@ -62,13 +73,19 @@ export class AccessService {
 
   private handleUser = (user: User): void => {
     this.user$.next(user);
-    localStorage.setItem('user', JSON.stringify(user));
-
+    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    this.loadingService.stop();
     this.router.navigate(['/home']);
   }
 
   private handleNewUser = (email: string): void => {
-    this.userService.createUser(email).subscribe(this.handleUser);
+    this.userService.createUser(email).subscribe({
+      next: (user: User) => {
+        this.handleUser(user);
+        this.toastrService.success('Usuário criado com sucesso');
+      },
+      error: () => this.toastrService.error('Erro ao criar usuário')
+    });
   }
 
 }

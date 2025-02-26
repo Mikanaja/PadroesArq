@@ -5,14 +5,15 @@ import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { User } from '../../core/models/user.model';
 import { FormGroup } from '@angular/forms';
 import { AccessService } from '../../core/services/access.service';
-import { LoadingService } from '../../shared/components/splash-screen/loading.service';
 import { createUserForm } from '../../core/utils/forms';
+import { DeepRealButtonComponent } from "../../shared/components/deep-real-button/deep-real-button.component";
 
 @Component({
   selector: 'deep-real-home',
   imports: [
     DeepRealFilesModule,
-    DeepRealPageComponent
+    DeepRealPageComponent,
+    DeepRealButtonComponent
 ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -24,8 +25,7 @@ export class HomeComponent implements OnInit {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private accessService: AccessService,
-    private loadingService: LoadingService
+    private accessService: AccessService
   ) { }
 
   public get userForm(): FormGroup {
@@ -33,10 +33,13 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadingService.stop();
     this.accessService.currentUser()
       .pipe(takeUntil(this.destroy$))
       .subscribe(this.onUserChange);
+  }
+
+  public logout = (): void => {
+    this.accessService.logout();
   }
 
   private onUserChange = (user: User): void => {
