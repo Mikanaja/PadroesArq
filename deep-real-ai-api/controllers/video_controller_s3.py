@@ -86,8 +86,10 @@ def get_router(image_processor, model, s3_client):
 
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Erro ao gerar a classificação: {str(e)}")
+            
+            print(f"Classificação: {label}")
 
-            return {"classification": label}
+            return label
 
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Erro ao processar o vídeo: {str(e)}")

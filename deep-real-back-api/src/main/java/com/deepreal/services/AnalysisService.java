@@ -71,7 +71,8 @@ public class AnalysisService {
             .bodyToMono(String.class)
             .block();
 
-        return result.equals("Deepfake") ? AnalysisState.FAKE : AnalysisState.REAL;
+        System.out.println("Resultado da análise: " + result);
+        return result.contains("Deepfake") ? AnalysisState.FAKE : AnalysisState.REAL;
     }
 
     // Métodos auxiliares de validação
