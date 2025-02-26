@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Video } from '../../../../core/models/video.model';
 
@@ -8,13 +8,19 @@ import { Video } from '../../../../core/models/video.model';
   templateUrl: './deep-real-files-lists.component.html',
   styleUrl: './deep-real-files-lists.component.scss'
 })
-export class DeepRealFilesListsComponent {
+export class DeepRealFilesListsComponent implements OnInit {
   
   public videos$: BehaviorSubject<Video[]> = new BehaviorSubject<Video[]>([]);
+
+  // private videosFormArray$: BehaviorSubject<FormArray<FormGroup>> = new BehaviorSubject<FormArray<FormGroup>>(new FormArray<FormGroup>([]));
 
   @Input()
   public set videos(videos: Video[]) {
     this.videos$.next(videos);
+  }
+
+  public get videosArray(): Video[] {
+    return this.videos$.value;
   }
 
   public inProgress: boolean = false;
@@ -27,4 +33,9 @@ export class DeepRealFilesListsComponent {
   }
 
   constructor() { }
+  
+  ngOnInit(): void {
+    debugger;
+    console.log('videosFormArray', this.videos.values);
+  }
 }
