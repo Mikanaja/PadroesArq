@@ -1,13 +1,11 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-import os
-import cv2
-import numpy as np
 import torch
 from PIL import Image
-import requests
-from transformers import ViTForImageClassification, ViTImageProcessor
 import io
+import cv2
+import tempfile
+import os 
 
 class VideoUrlRequest(BaseModel):
     video_url: str
@@ -15,65 +13,71 @@ class VideoUrlRequest(BaseModel):
 def get_router(image_processor, model, s3_client):
     router = APIRouter()
 
-    def extract_middle_frame(video_bytes, video_name):
-        """Extrai o frame do meio do vídeo e salva a imagem."""
-        video_array = np.frombuffer(video_bytes, dtype=np.uint8)
-        cap = cv2.VideoCapture()
-        cap.open(io.BytesIO(video_array))  # abre diretamente do buffer
-
-        frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
-        if frame_count == 0:
-            raise ValueError("Não foi possível extrair frames do vídeo.")
-
-        middle_frame_index = frame_count // 2
-        cap.set(cv2.CAP_PROP_POS_FRAMES, middle_frame_index)
-
-        ret, frame = cap.read()
-        cap.release()
-
-        if not ret:
-            raise ValueError("Não foi possível ler o frame do meio.")
-
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        image = Image.fromarray(frame)
-
-        save_dir = "../middle_frame"
-        os.makedirs(save_dir, exist_ok=True)
-
-        image_path = os.path.join(save_dir, f"{video_name}_middle_frame.jpg")
-
+    def extract_middle_frame(video_bytes, save_frame_path=None):
+        """"""
         try:
-            image.save(image_path)
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Erro ao salvar a imagem: {str(e)}")
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as tmp_video_file:
+                tmp_video_file.write(video_bytes)
+                tmp_video_file.close()
 
-        return image
+                cap = cv2.VideoCapture(tmp_video_file.name)
+
+                if not cap.isOpened():
+                    raise ValueError("Não foi possível abrir o vídeo.")
+
+                frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+                middle_frame_index = frame_count // 2
+
+                cap.set(cv2.CAP_PROP_POS_FRAMES, middle_frame_index)
+
+                ret, frame = cap.read()
+                cap.release()
+
+                if not ret:
+                    raise ValueError("Não foi possível ler o frame do meio.")
+
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+                os.remove(tmp_video_file.name)
+
+                pil_image = Image.fromarray(frame)
+
+                if save_frame_path:
+                    pil_image.save(save_frame_path)
+                    print(f"Frame salvo em: {save_frame_path}")
+
+                return pil_image
+        except Exception as e:
+            raise ValueError(f"Erro ao extrair o frame do vídeo: {str(e)}")
 
     @router.post("/upload/")
-    async def upload_video(request: VideoUrlRequest):  # not a query param
-        """Recebe a URL do vídeo, baixa e processa."""
+    async def upload_video(request: VideoUrlRequest):  
+        """Faz todo o rolê"""
         try:
             video_url = request.video_url  
-            response = requests.get(video_url, stream=True)
+            s3_base_url = f"https://{s3_client.bucket_name}.s3.{s3_client.region_name}.amazonaws.com/"
+            
+            print(f"nome do bucket: {s3_client.bucket_name}")
+            print(f"nome da região: {s3_client.region_name}")
 
-            print(response)
+            if not video_url.startswith(s3_base_url):
+                raise HTTPException(status_code=400, detail="URL inválida ou não pertence ao bucket configurado.")
 
-            if response.status_code != 200:
-                raise HTTPException(status_code=400, detail="Falha ao baixar o vídeo.")
+            s3_object_key = "/".join(video_url.split(".com/")[-1].split("/"))
+            print(s3_object_key)
 
-            video_bytes = response.content
-            video_name = video_url.split("/")[-1].split(".")[0]
+            video_buffer = s3_client.download_fileobj(s3_client.bucket_name, s3_object_key)
 
-            middle_frame = extract_middle_frame(video_bytes, video_name)
+            save_path = "extracted_frame.jpg"  
+
+            middle_frame = extract_middle_frame(video_buffer.read(), save_frame_path=save_path)
 
             try:
                 inputs = image_processor(images=middle_frame, return_tensors="pt")
 
                 with torch.no_grad():
                     outputs = model(**inputs)
-                    logits = outputs.logits
-                    predicted_class = torch.argmax(logits, dim=1).item()
+                    predicted_class = torch.argmax(outputs.logits, dim=1).item()
 
                 label = model.config.id2label[predicted_class]
 
