@@ -7,11 +7,11 @@
 
 ## Métricas de Avaliação
 <p align="center">
-    <img src="images/classification_report.png" alt="Classification Report" width="776"/>
+    <img src="../images/classification_report.png" alt="Classification Report" width="776"/>
 <p>
 
 ## Matriz de Confusão
 <p align="center">
-    <img src="images/confusion_matrix.png" alt="Matriz de Confusão" width="512"/>
+    <img src="../images/confusion_matrix.png" alt="Matriz de Confusão" width="512"/>
 <p>
 
