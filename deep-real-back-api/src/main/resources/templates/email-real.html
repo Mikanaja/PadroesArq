@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Análise Concluída - DeepReal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Reset e configurações globais */
+    body, p, h1, h2, h3, ul, li, a { margin: 0; padding: 0; }
+    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #e9ecef; }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: #ffffff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    /* Cabeçalho com gradiente */
+    .header {
+      background: linear-gradient(135deg, #2E7D32, #66BB6A);
+      padding: 30px;
+      text-align: center;
+      color: #ffffff;
+    }
+    .header h1 { font-size: 32px; margin-bottom: 10px; }
+    .header p { font-size: 18px; }
+    /* Imagem de destaque */
+    .hero {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    /* Área de conteúdo */
+    .content {
+      padding: 30px;
+    }
+    .content h2 {
+      color: #2E7D32;
+      font-size: 26px;
+      margin-bottom: 15px;
+    }
+    .content p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    /* Bloco com detalhes da análise */
+    .analysis-details {
+      background: #E8F5E9;
+      border: 1px solid #C8E6C9;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+    .analysis-details h3 {
+      font-size: 22px;
+      color: #2E7D32;
+      margin-bottom: 10px;
+    }
+    .analysis-details ul {
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+    .analysis-details ul li {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    /* Botão de call-to-action */
+    .button {
+      display: inline-block;
+      padding: 15px 30px;
+      background: #2E7D32;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    /* Rodapé */
+    .footer {
+      background: #f8f9fa;
+      padding: 20px;
+      text-align: center;
+      font-size: 16px;
+      color: #777;
+    }
+    .footer a {
+      color: #2E7D32;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    /* Ajustes responsivos */
+    @media (max-width: 600px) {
+      .container { max-width: 100%; margin: 15px; }
+      .header h1 { font-size: 28px; }
+      .content h2 { font-size: 22px; }
+      .content p, .analysis-details ul li { font-size: 16px; }
+      .button { font-size: 16px; padding: 10px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Cabeçalho -->
+    <div class="header">
+      <h1>DeepReal</h1>
+      <p>Análise de Vídeo Concluída</p>
+    </div>
+    <!-- Conteúdo -->
+    <div class="content">
+      <h2>Olá,</h2>
+      <p>A análise do vídeo <strong>VIDEO_NAME</strong> foi concluída com sucesso.</p>
+      <div class="analysis-details">
+        <h3>Resultado: Vídeo AUTÊNTICO</h3>
+        <p>O vídeo não apresenta indícios de manipulação e pode ser considerado confiável. Agradecemos por escolher a DeepReal para validar seu conteúdo.</p>
+        <p style="text-align: center; margin-top: 30px;">
+      </div>
+        <p style="text-align: center; margin-top: 30px;">
+        <a href="https://deepreal.com/dashboard" class="button">Faça uma nova consulta</a>
+      </p>
+    </div>
+    <!-- Rodapé -->
+    <div class="footer">
+      <p>&copy; 2025 DeepReal análise de videos.</p>
+      <p>
+        <a href="https://facebook.com/deepreal">Facebook</a> |
+        <a href="https://twitter.com/deepreal">Twitter</a> |
+        <a href="https://instagram.com/deepreal">Instagram</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

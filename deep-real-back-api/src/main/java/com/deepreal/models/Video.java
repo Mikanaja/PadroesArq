@@ -38,19 +38,19 @@ public class Video {
     @NotNull
     private UUID id;
 
-    @Column(name = "titulo")
+    @Column(name = "titulo", updatable = false)
     @NotBlank
     private String title;
 
-    @Column(name = "url_bucket")
+    @Column(name = "url_bucket", updatable = false)
     @NotBlank
     private String s3Url;
 
-    @Column(name = "extensao_arquivo")
+    @Column(name = "extensao_arquivo", updatable = false)
     @NotBlank
     private String fileType;
 
-    @Column(name = "tamanho_arquivo")
+    @Column(name = "tamanho_arquivo", updatable = false)
     @NotNull
     private Long fileSize;
 
