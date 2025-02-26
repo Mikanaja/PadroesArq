@@ -1,10 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { UploadFileService } from '../../../../core/services/upload-file.service';
 import { Video } from '../../../../core/models/video.model';
-import { BehaviorSubject } from 'rxjs';
-import { FormArray, FormGroup } from '@angular/forms';
+import { BehaviorSubject, map, Observable } from 'rxjs';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { createVideoForm } from '../../../../core/utils/forms';
 import { HttpEventType } from '@angular/common/http';
+import { UserService } from '../../../../core/services/user.service';
+import { User } from '../../../../core/models/user.model';
+import { ToastrService } from 'ngx-toastr';
+import { LoadingService } from '../../splash-screen/loading.service';
+import { ProgressStatus } from '../../deep-real-progress-bar/deep-real-progress-bar.component';
+
+interface VideoUpload {
+  file: File;
+  progress: number; // De 0 a 100
+}
 
 @Component({
   selector: 'deep-real-upload-file',
@@ -18,26 +28,36 @@ import { HttpEventType } from '@angular/common/http';
 export class DeepRealUploadFileComponent implements OnInit {
 
   public videos$: BehaviorSubject<Video[]> = new BehaviorSubject<Video[]>([]);
-  
-  private videosFormArray$: BehaviorSubject<FormArray<FormGroup>> = new BehaviorSubject<FormArray<FormGroup>>(new FormArray<FormGroup>([]));
+  public progress: number = 0;
+  public progressStatus: string = ProgressStatus.waiting;
 
+  private user$: BehaviorSubject<FormGroup> = new BehaviorSubject<FormGroup>(new FormGroup({}));
   private files: File[] = [];
 
+
   @Input()
-  public set videosForm(videosFormArray: FormArray) {
-    this.videosFormArray$.next(videosFormArray);
+  public set userForm(userForm: FormGroup) {
+    this.user$.next(userForm);
   }
 
   constructor(
+    private cdr: ChangeDetectorRef,
+    private userService: UserService,
+    private toastrService: ToastrService,
+    private loadingService: LoadingService,
     private uploadFileService: UploadFileService
   ) { }
 
   ngOnInit(): void {
-    this.loadExistingVideos();
+    this.loadUserVideos(this.user.id);
   }
 
-  public get videosFormArray(): FormArray {
-    return this.videosFormArray$.value;
+  public get userForm(): FormGroup {
+    return this.user$.value;
+  }
+
+  public get user(): User {
+    return this.userForm?.value;
   }
 
   public get videos(): Video[] {
@@ -52,19 +72,9 @@ export class DeepRealUploadFileComponent implements OnInit {
     const input = event.target as HTMLInputElement;
 
     if (input.files) {
-      // const selectedFiles: File[] = Array.from(input.files);
-      // this.files = [...this.files, ...selectedFiles];
-      // this.handleUploadMultipleFiles(selectedFiles);
-      const formArray: FormArray = this.videosFormArray;
-
-      Array.from(input.files).forEach((file: File) => {
-        const video = new Video('', file.name, '', file.type, file.size);
-        const videoForm = createVideoForm(video);
-        formArray.push(videoForm);
-        this.handleUploadSingleFile(file, videoForm);
-      });
-
-      this.videosFormArray$.next(new FormArray([...formArray.controls]) as FormArray);
+      const files: File[] = Array.from(input.files);
+      this.videos$.next([...this.videos, ...files.map((file: File) => new Video('', file.name, '', file.type, file.size))]);
+      this.handleUploadMultipleFiles(files);
     }
 
     input.value = '';
@@ -72,29 +82,34 @@ export class DeepRealUploadFileComponent implements OnInit {
 
   private handleUploadMultipleFiles(files: File[]): void {
     files.forEach((file: File) => {
-      // this.handleUploadSingleFile(file);
+        this.handleUploadSingleFile(file);
     });
-  }
+}
 
-  private handleUploadSingleFile(file: File, videoForm: FormGroup): void {
+  private handleUploadSingleFile(file: File): void {
     const formData: FormData = new FormData();
     formData.append('file', file);
-
-    this.uploadFileService.uploadFile('uiasi', formData)
+    
+    this.loadingService.start();
+    this.uploadFileService.uploadFile(this.user.id, formData)
       .subscribe({
-        next: (event) => {
+        next: (event: any) => {
+          this.loadingService.stop();
+          
           if (event.type === HttpEventType.UploadProgress) {
             const progress = Math.round(100 * event.loaded / (event.total ?? 1));
-            videoForm.patchValue({ progress });
+            console.log(progress);
+            this.progress = progress;
           } else if (event.type === HttpEventType.Response) {
-            const video = event?.body;
-            videoForm.patchValue({ id: video?.id, s3Url: video?.s3Url });
+            this.progress = 100;
+            this.progressStatus = ProgressStatus.success;
           }
-          // console.log(video);
-          // this.videos$.next([...this.videos, video]);
-          // this.videosFormArray.push(createVideoForm(video));
         },
-        error: () => videoForm.patchValue({ progress: -1 })
+        error: (error: any) => {
+          this.progressStatus = ProgressStatus.error;
+          this.loadingService.stop();
+          this.toastrService.error(error?.error?.message);
+        }
       });
   }
 
@@ -102,19 +117,9 @@ export class DeepRealUploadFileComponent implements OnInit {
     this.files = this.files.filter((f: File) => f !== file);
   }
 
-  private loadExistingVideos(): void {}
+  private loadUserVideos(userId: string): void {
+    this.userService.findUserVideos(userId)
+      .subscribe((videos: Video[]) => this.videos$.next(videos));
+  }
 
 }
-
-/**
- * if (this.files.length === 0) {
-      this.files = event.target.files;
-    } else {
-      this.files = Array.from(this.files).concat(Array.from(event.target.files));
-    }
-    
-    this.files = event.target.files;
-    if (this.files.length > 0) {
-      this.handleUploadMultipleFiles(this.files);
-    }
- */
