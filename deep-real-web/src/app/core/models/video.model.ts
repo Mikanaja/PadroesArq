@@ -6,6 +6,7 @@ export class Video {
     public fileType: string;
     public fileSize: number;
     public state: string;
+    public createdAt: Date;
 
     constructor(
         id: string,
@@ -13,7 +14,8 @@ export class Video {
         s3Url: string,
         fileType: string,
         fileSize: number,
-        state: string
+        state: string,
+        createdAt: Date = new Date()
     ) {
         this.id = id;
         this.title = title;
@@ -21,5 +23,6 @@ export class Video {
         this.fileType = fileType;
         this.fileSize = fileSize;
         this.state = state;
+        this.createdAt = createdAt;
     }
 }
