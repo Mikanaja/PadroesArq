@@ -1,20 +1,17 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UploadFileService } from '../../../../core/services/upload-file.service';
 import { Video } from '../../../../core/models/video.model';
-import { BehaviorSubject, map, Observable } from 'rxjs';
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
-import { createVideoForm } from '../../../../core/utils/forms';
+import { BehaviorSubject } from 'rxjs';
+import { FormGroup } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { UserService } from '../../../../core/services/user.service';
 import { User } from '../../../../core/models/user.model';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingService } from '../../splash-screen/loading.service';
 import { ProgressStatus } from '../../deep-real-progress-bar/deep-real-progress-bar.component';
-
-interface VideoUpload {
-  file: File;
-  progress: number; // De 0 a 100
-}
+import { Enum } from '../../../../core/types';
+import { ApplicationService } from '../../../../core/services/application.service';
+import { EnumsNames } from '../../../../core/data/enums';
 
 @Component({
   selector: 'deep-real-upload-file',
@@ -28,8 +25,9 @@ interface VideoUpload {
 export class DeepRealUploadFileComponent implements OnInit {
 
   public videos$: BehaviorSubject<Video[]> = new BehaviorSubject<Video[]>([]);
-  public progress: number = 0;
+  public analysisState$: BehaviorSubject<Enum[]> = new BehaviorSubject<Enum[]>([]);
   public progressStatus: string = ProgressStatus.waiting;
+  public progress: number = 0;
 
   private user$: BehaviorSubject<FormGroup> = new BehaviorSubject<FormGroup>(new FormGroup({}));
   private files: File[] = [];
@@ -41,15 +39,16 @@ export class DeepRealUploadFileComponent implements OnInit {
   }
 
   constructor(
-    private cdr: ChangeDetectorRef,
     private userService: UserService,
     private toastrService: ToastrService,
     private loadingService: LoadingService,
+    private appService: ApplicationService,
     private uploadFileService: UploadFileService
   ) { }
 
   ngOnInit(): void {
     this.loadUserVideos(this.user.id);
+    this.loadEnums();
   }
 
   public get userForm(): FormGroup {
@@ -73,7 +72,7 @@ export class DeepRealUploadFileComponent implements OnInit {
 
     if (input.files) {
       const files: File[] = Array.from(input.files);
-      this.videos$.next([...this.videos, ...files.map((file: File) => new Video('', file.name, '', file.type, file.size))]);
+      this.videos$.next([...this.videos, ...files.map((file: File) => new Video('', file.name, '', file.type, file.size, ''))]);
       this.handleUploadMultipleFiles(files);
     }
 
@@ -95,7 +94,8 @@ export class DeepRealUploadFileComponent implements OnInit {
       .subscribe({
         next: (event: any) => {
           this.loadingService.stop();
-          
+          this.progress = 0;
+          this.progressStatus = ProgressStatus.waiting;
           if (event.type === HttpEventType.UploadProgress) {
             const progress = Math.round(100 * event.loaded / (event.total ?? 1));
             console.log(progress);
@@ -104,6 +104,8 @@ export class DeepRealUploadFileComponent implements OnInit {
             this.progress = 100;
             this.progressStatus = ProgressStatus.success;
           }
+          
+          console.log(event?.body);
         },
         error: (error: any) => {
           this.progressStatus = ProgressStatus.error;
@@ -113,6 +115,10 @@ export class DeepRealUploadFileComponent implements OnInit {
       });
   }
 
+  public findAnalysisStateDescription(roomType: string): string {
+    return this.analysisState$.value.find((enumValue: Enum) => enumValue.name === roomType)?.description ?? '';
+  }
+
   public onRemove(file: File): void {
     this.files = this.files.filter((f: File) => f !== file);
   }
@@ -120,6 +126,11 @@ export class DeepRealUploadFileComponent implements OnInit {
   private loadUserVideos(userId: string): void {
     this.userService.findUserVideos(userId)
       .subscribe((videos: Video[]) => this.videos$.next(videos));
+  }
+
+  private loadEnums(): void {
+    this.appService.findEnumByName(EnumsNames.ANALYSIS_STATE)
+      .subscribe((enums: Enum[]) => this.analysisState$.next(enums));
   }
 
 }
