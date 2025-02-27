@@ -25,7 +25,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity< User> create(@RequestBody String email) {
+    public ResponseEntity<User> create(@RequestBody String email) {
         User user = userService.create(email);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(user.getId()).toUri();
