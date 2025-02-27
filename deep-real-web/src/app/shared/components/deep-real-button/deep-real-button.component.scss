@@ -20,14 +20,18 @@ button {
 
 
     &.flat {
-        border: 1px solid var(--deep-real-black);
+        border: 1px solid var(--secondary-color);
         border-radius: 1rem;
         height: 4rem;
         width: 100%;
         transition: background-color 0.3s;
 
+        span {
+            font-weight: bold;
+        }
+
         &:hover {
-            background-color: var(--deep-real-black);
+            background-color: var(--secondary-color);
 
             span {
                 color: white;
