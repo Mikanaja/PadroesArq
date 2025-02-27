@@ -1,8 +1,12 @@
 package com.deepreal.models;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import com.deepreal.models.dto.EnumDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -75,6 +79,12 @@ public class Video {
         REAL(1, "Deepfake não detectado");
         private int code;
         private String descricao;
+
+        public static List<EnumDto> buildEnumDto() {
+            return Arrays.stream(AnalysisState.values())
+                    .map(state -> new EnumDto(state.name(), state.getDescricao()))
+                    .collect(Collectors.toList());
+        }
     }
 
     @PrePersist
