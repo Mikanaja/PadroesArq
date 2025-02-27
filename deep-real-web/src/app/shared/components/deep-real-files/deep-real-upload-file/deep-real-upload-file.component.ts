@@ -72,18 +72,34 @@ export class DeepRealUploadFileComponent implements OnInit {
 
     if (input.files) {
       const files: File[] = Array.from(input.files);
-      this.videos$.next([...this.videos, ...files.map((file: File) => new Video('', file.name, '', file.type, file.size, ''))]);
+      const newVideos = files.map((file: File) => new Video('', file.name, '', file.type, file.size, ''));
+      this.videos$.next([...newVideos, ...this.videos]);
       this.handleUploadMultipleFiles(files);
     }
 
     input.value = '';
   }
 
+  public findAnalysisStateDescription(roomType: string): string {
+    return this.analysisState$.value.find((enumValue: Enum) => enumValue.name === roomType)?.description ?? '';
+  }
+
+  public formatBytes(bytes: number, decimals: number = 2): string {
+    if (bytes === 0) {
+      return "0 Bytes";
+    }
+    const k = 1024;
+    const dm = decimals <= 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
+
   private handleUploadMultipleFiles(files: File[]): void {
     files.forEach((file: File) => {
         this.handleUploadSingleFile(file);
     });
-}
+  }
 
   private handleUploadSingleFile(file: File): void {
     const formData: FormData = new FormData();
@@ -97,15 +113,13 @@ export class DeepRealUploadFileComponent implements OnInit {
           this.progress = 0;
           this.progressStatus = ProgressStatus.waiting;
           if (event.type === HttpEventType.UploadProgress) {
-            const progress = Math.round(100 * event.loaded / (event.total ?? 1));
-            console.log(progress);
+            const progress = Math.round(90 * event.loaded / (event.total ?? 1));
             this.progress = progress;
           } else if (event.type === HttpEventType.Response) {
             this.progress = 100;
             this.progressStatus = ProgressStatus.success;
+            this.loadUserVideos(this.user.id);
           }
-          
-          console.log(event?.body);
         },
         error: (error: any) => {
           this.progressStatus = ProgressStatus.error;
@@ -115,17 +129,21 @@ export class DeepRealUploadFileComponent implements OnInit {
       });
   }
 
-  public findAnalysisStateDescription(roomType: string): string {
-    return this.analysisState$.value.find((enumValue: Enum) => enumValue.name === roomType)?.description ?? '';
-  }
-
   public onRemove(file: File): void {
     this.files = this.files.filter((f: File) => f !== file);
   }
 
   private loadUserVideos(userId: string): void {
     this.userService.findUserVideos(userId)
-      .subscribe((videos: Video[]) => this.videos$.next(videos));
+      .subscribe((videos: Video[]) => {
+        this.sortVideos(videos);
+        this.videos$.next(videos);
+      });
+  }
+
+  private sortVideos(videos: Video[]) {
+    return videos.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
   }
 
   private loadEnums(): void {

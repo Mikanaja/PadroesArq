@@ -4,7 +4,8 @@
         type="file"
         (change)="onFileChange($event)"
         multiple
-        #fileUpload/>
+        #fileUpload
+        accept=".mp4, .avi, .mkv, .mov, .flv"/>
 
     <div class="icon">
         <img [src]="iconPath" alt="Upload icon" class="dropzone__icon">
@@ -22,20 +23,21 @@
 </deep-real-files-lists> -->
 
 <div class="file-list" *ngIf="videos.length > 0">
-
-    <div class="file" [ngClass]="progressStatus" *ngFor="let video of videos; let i = index">
-        <div class="icon">
-            <img [src]="iconPath" alt="Upload icon" class="dropzone__icon">
-        </div>
-        <div class="info">
-            <p>{{ video.title }}</p>
-            <div class="loading" *ngIf="progressStatus === 'waiting'; else progressResult">
-                 <deep-real-progress-bar [progress]="progress" [status]="progressStatus"></deep-real-progress-bar>
+    <ng-content *ngFor="let video of videos; let i = index">
+        <div class="file" [ngClass]="video.state">
+            <div class="icon">
+                <img [src]="iconPath" alt="Upload icon" class="dropzone__icon">
             </div>
-            <ng-template #progressResult>
-                <span>{{ findAnalysisStateDescription(video.state) }}</span>
-            </ng-template>
-            <span>{{ video.fileSize }}</span>
+            <div class="info">
+                <p>{{ video.title }}</p>
+                <div class="loading" *ngIf="!video.state; else progressResult">
+                     <deep-real-progress-bar [progress]="progress" [status]="progressStatus"></deep-real-progress-bar>
+                </div>
+                <ng-template #progressResult>
+                    <span>{{ findAnalysisStateDescription(video.state) }}</span>
+                </ng-template>
+                <span>{{ formatBytes(video.fileSize) }}</span>
+            </div>
         </div>
-    </div>
+    </ng-content>
 </div>
