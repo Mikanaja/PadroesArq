@@ -34,7 +34,7 @@
                      <deep-real-progress-bar [progress]="progress" [status]="progressStatus"></deep-real-progress-bar>
                 </div>
                 <ng-template #progressResult>
-                    <span>{{ findAnalysisStateDescription(video.state) }}</span>
+                    <span class="state">{{ findAnalysisStateDescription(video.state) }}</span>
                 </ng-template>
                 <span>{{ formatBytes(video.fileSize) }}</span>
             </div>
