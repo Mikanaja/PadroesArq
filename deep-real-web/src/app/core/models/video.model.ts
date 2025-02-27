@@ -5,18 +5,21 @@ export class Video {
     public s3Url: string;
     public fileType: string;
     public fileSize: number;
+    public state: string;
 
     constructor(
         id: string,
         title: string,
         s3Url: string,
         fileType: string,
-        fileSize: number
+        fileSize: number,
+        state: string
     ) {
         this.id = id;
         this.title = title;
         this.s3Url = s3Url;
         this.fileType = fileType;
         this.fileSize = fileSize;
+        this.state = state;
     }
 }
