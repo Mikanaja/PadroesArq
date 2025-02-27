@@ -1,10 +1,22 @@
+:host(.access) {
+    background-image: url("./../../../assets/images/deep-real.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: block;
+}
+
 deep-real-page {
     position: relative;
 
     .content {
+        background-color: var(--deep-real-white);
+        padding: 2rem;
+        border-radius: 25px;
         position: absolute;
         top: 50%;
-        left: 50%;
+        left: 15%;
         transform: translate(-50%, -50%);
         width: 30rem;
         display: flex;

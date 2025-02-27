@@ -9,7 +9,7 @@ import { DeepRealPageComponent } from "../../shared/components/containers/deep-r
 import { DeepRealButtonComponent } from "../../shared/components/deep-real-button/deep-real-button.component";
 
 @Component({
-  selector: 'app-access',
+  selector: 'access',
   imports: [
     ReactiveFormsModule,
     InputsModule,
@@ -18,7 +18,10 @@ import { DeepRealButtonComponent } from "../../shared/components/deep-real-butto
     DeepRealButtonComponent
 ],
   templateUrl: './access.component.html',
-  styleUrl: './access.component.scss'
+  styleUrl: './access.component.scss',
+  host: {
+    class: 'access'
+  }
 })
 export class AccessComponent implements OnInit {
 
