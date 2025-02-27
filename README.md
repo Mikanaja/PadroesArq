@@ -10,7 +10,8 @@ Wendel Márcio de Oliveira Filho - 202105056
 
 # Detecção de Vídeos Gerados por Modelos GAN
 
-* Slides: <https://docs.google.com/presentation/d/1DgzvqjwAH4gJurORHiInOSs1ZNeVvWo6Hj6tNCSmbZo/edit#slide=id.p>
+* Slides - Apresentação Inicial: <https://docs.google.com/presentation/d/1DgzvqjwAH4gJurORHiInOSs1ZNeVvWo6Hj6tNCSmbZo/edit#slide=id.p>
+* Slides - Apresentação Final: <https://docs.google.com/presentation/d/1l681xqFNXYUYbuaARVSSAkbOzyb987tmTuEmViFGTLM/edit#slide=id.p>
   
 ## C4 Model
 
